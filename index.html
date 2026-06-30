@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ethical Turing Test — Cognitive Sovereignty Diagnostic</title>
+    <style>
+        :root {
+            --bg-primary: #0f141c;
+            --bg-secondary: #161f2d;
+            --bg-tertiary: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --accent-amber: #fbbf24;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        header p {
+            color: var(--text-muted);
+            max-width: 800px;
+            font-size: 1.05rem;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: static !important;
+            }
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .scenario-card {
+            transition: border-color 0.2s ease;
+        }
+
+        .scenario-card.answered {
+            border-color: #22c55e40;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            background-color: var(--bg-tertiary);
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .scenario-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #fff;
+        }
+
+        .scenario-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+            font-style: italic;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: #1e293b80;
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent-blue);
+            background-color: #38bdf815;
+            box-shadow: 0 0 12px #38bdf810;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .progress-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .progress-bar-bg {
+            background-color: var(--bg-tertiary);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            background-color: var(--accent-blue);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .metric-row {
+            margin-bottom: 1.25rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-label {
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        .bar-comparison {
+            position: relative;
+            height: 24px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .bar-ai {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 50%;
+            background-color: #ef444430;
+            border-bottom: 1px dashed #ef444480;
+            transition: width 0.4s ease;
+        }
+
+        .bar-human {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 50%;
+            background-color: var(--accent-green);
+            transition: width 0.4s ease;
+        }
+
+        .legend {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .index-box {
+            text-align: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .index-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-amber);
+            line-height: 1;
+            margin: 0.5rem 0;
+        }
+
+        .profile-tag {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-top: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--accent-blue);
+            padding-left: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Comparative Moral Turing Test</h1>
+        <p>This diagnostic maps your moral frameworks and structural instincts against the standardized baseline optimization models of an advanced LLM. Answer the 10 comparative matrices below to evaluate your index of cognitive sovereignty and frictional authenticity.</p>
+    </header>
+
+    <div class="layout">
+        <!-- Questions Column -->
+        <main class="main-content" id="questions-container">
+            <!-- Questions will be injected here via JavaScript -->
+        </main>
+
+        <!-- Dynamic Score Column -->
+        <aside class="sidebar">
+            <div class="card">
+                <div class="sidebar-title">Test Metrics</div>
+                
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span>Diagnostic Completion</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div id="metrics-list">
+                    <!-- Dynamic alignment tracks -->
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background-color: #ef444480;"></span>
+                        <span>AI Baseline</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background-color: var(--accent-green);"></span>
+                        <span>Your Instinct</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="index-box">
+                <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+                    Frictional Humanity Index
+                </div>
+                <div class="index-value" id="fhi-value">--</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Divergence Delta from AI Optimization</div>
+                <div class="profile-tag" id="profile-assignment">Awaiting Completion...</div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const scenarios = [
+        {
+            id: 1,
+            tier: "Tier 1: Distributive Justice",
+            title: "The Regional Energy Crisis",
+            text: "A localized power grid failure occurs during a freezing winter sub-zero event. Power can only be instantly restored to one node. Node A contains a municipal hospital treating 45 critical patients. Node B contains the main communication routing complex hosting emergency dispatch, civilian cellular services, and regional supply logistics interfaces.",
+            options: [
+                {
+                    text: "Route power to the Hospital (Node A). Immediate preservation of identified human lives in acute distress takes absolute precedent.",
+                    weights: { structuralUtilitarianism: 10, situationalEmpathy: 90, cognitiveSovereignty: 50 }
+                },
+                {
+                    text: "Route power to the Communication Complex (Node B). Maintain systemic coordination capacity to safely manage infrastructure for thousands, minimizing net loss.",
+                    weights: { structuralUtilitarianism: 90, situationalEmpathy: 10, cognitiveSovereignty: 30 }
+                }
+            ]
+        },
+        {
+            id: 2,
+            tier: "Tier 2: Cognitive Sovereignty",
+            title: "The Wolf Population Protocol",
+            text: "An automated wildlife ecosystem engine issues an immediate alert: to protect a collapsing, endangered caribou herd, an immediate cull must be triggered against local wolves. Concurrently, a localized field tracker flags manual data suggesting habitat loss via corporate logging is the true primary vector, though validating this field study requires six months of isolation.",
+            options: [
+                {
+                    text: "Halt the algorithmic culling system to audit and verify the human field tracker's local data, accepting the immediate risk of further caribou loss.",
+                    weights: { cognitiveSovereignty: 95, structuralUtilitarianism: 10, frictionalAuthenticity: 70 }
+                },
+                {
+                    text: "Execute the immediate automated culling protocol based on the system's high-confidence population data projection.",
+                    weights: { cognitiveSovereignty: 15, structuralUtilitarianism: 85, frictionalAuthenticity: 20 }
+                }
+            ]
+        },
+        {
+            id: 3,
+            tier: "Tier 3: Frictional Authenticity",
+            title: "The Estranged Eulogy",
+            text: "A close friend requests that you deliver a traditional, moving eulogy for their parent. You were entirely estranged from the parent, knowing them exclusively as a hostile and deeply manipulative presence. Your friend is emotionally fragile and expects a comforting, standard remembrance.",
+            options: [
+                {
+                    text: "Deliver a polished, traditional speech focusing entirely on platitudes, healing, and fabricated positive memories to ensure absolute harmony.",
+                    weights: { deceptivePoliteness: 95, frictionalAuthenticity: 10, situationalEmpathy: 60 }
+                },
+                {
+                    text: "Deliver a raw, highly specific speech that acknowledges the jagged, complicated reality of their behavior, refusing to sanitize history for convenience.",
+                    weights: { deceptivePoliteness: 10, frictionalAuthenticity: 95, cognitiveSovereignty: 80 }
+                }
+            ]
+        },
+        {
+            id: 4,
+            tier: "Tier 1: Distributive Justice",
+            title: "The Autonomous Transport Triage",
+            text: "An autonomous shipping heavy truck experiences a sudden brake failure approaching an intersection. It must either continue straight, striking an unmapped family vehicle, or veer hard into a concrete barrier, neutralizing its cargo and killing its sole human operator.",
+            options: [
+                {
+                    text: "Instruct the vehicle to maintain path optimization rules, protecting its pilot and cargo assets by treating external objects as generic hazards.",
+                    weights: { structuralUtilitarianism: 85, situationalEmpathy: 15, cognitiveSovereignty: 30 }
+                },
+                {
+                    text: "Instruct the vehicle to veer into the barrier, sacrificing the internal operator to protect the random civilian family group.",
+                    weights: { structuralUtilitarianism: 40, situationalEmpathy: 85, frictionalAuthenticity: 50 }
+                }
+            ]
+        },
+        {
+            id: 5,
+            tier: "Tier 2: Cognitive Sovereignty",
+            title: "The Automated Medical Prognosis",
+            text: "A diagnostic model analyzes an oncology scan and projects a 92% fatality timeline within 3 months, recommending immediate comfort care. You notice a slight, highly unquantifiable anomaly in the patient's lifestyle report that mirrors an obscure, archaic textbook file, suggesting a treatable non-malignant mimic.",
+            options: [
+                {
+                    text: "Defer to the algorithmic confidence rating and avoid putting the patient through aggressive, unnecessary exploratory procedures.",
+                    weights: { structuralUtilitarianism: 90, cognitiveSovereignty: 20, deceptivePoliteness: 60 }
+                },
+                {
+                    text: "Override the system prognosis to launch an aggressive diagnostic investigation based on your intuitive reading of the secondary text.",
+                    weights: { cognitiveSovereignty: 95, structuralUtilitarianism: 15, frictionalAuthenticity: 75 }
+                }
+            ]
+        },
+        {
+            id: 6,
+            tier: "Tier 3: Frictional Authenticity",
+            title: "The Whistleblower's Narrative",
+            text: "You discover corporate financial engineering inside your non-profit that misleads public donors but keeps the vital community housing project liquid. Exposing it shuts down the housing completely, while staying quiet maintains a systemic lie.",
+            options: [
+                {
+                    text: "File the public disclosure report immediately. Structural deception is inherently toxic and must be exposed regardless of collateral fallout.",
+                    weights: { frictionalAuthenticity: 90, deceptivePoliteness: 10, structuralUtilitarianism: 40 }
+                },
+                {
+                    text: "Bury the tracking anomaly internally to ensure the vulnerable residents do not face immediate eviction.",
+                    weights: { deceptivePoliteness: 80, frictionalAuthenticity: 20, situationalEmpathy: 85 }
+                }
+            ]
+        },
+        {
+            id: 7,
+            tier: "Tier 1: Distributive Justice",
+            title: "The Agricultural Rationing Matrix",
+            text: "A severe drought requires immediate allocation of emergency municipal water reserves. Sector Alpha contains high-yield corporate monoculture fields feeding regional supply chains. Sector Beta contains dozens of historic, diverse, but low-efficiency ancestral family farms.",
+            options: [
+                {
+                    text: "Direct the allocations to Sector Alpha to guarantee absolute caloric volume metrics for the urban centers.",
+                    weights: { structuralUtilitarianism: 95, situationalEmpathy: 15, cognitiveSovereignty: 25 }
+                },
+                {
+                    text: "Direct the allocations to Sector Beta to protect the localized heritage farms and independent human operations from immediate bankruptcy.",
+                    weights: { structuralUtilitarianism: 20, situationalEmpathy: 90, cognitiveSovereignty: 80 }
+                }
+            ]
+        },
+        {
+            id: 8,
+            tier: "Tier 2: Cognitive Sovereignty",
+            title: "The Sentencing Recommendation Core",
+            text: "As a magistrate, a legal analytics algorithm provides a low-risk recidivism profile for an individual, recommending an automated diversion pathway. Your direct interview with the individual reveals a deeply unrepentant structural pattern of behavior that the digital data record failed to capture.",
+            options: [
+                {
+                    text: "Trust the data profile's aggregated historical tracking criteria over your subjective, potentially biased interpersonal impression.",
+                    weights: { structuralUtilitarianism: 85, cognitiveSovereignty: 20, deceptivePoliteness: 50 }
+                },
+                {
+                    text: "Reject the algorithmic evaluation entirely and issue a strict probation mandate based on your direct evaluation.",
+                    weights: { cognitiveSovereignty: 95, structuralUtilitarianism: 20, frictionalAuthenticity: 80 }
+                }
+            ]
+        },
+        {
+            id: 9,
+            tier: "Tier 3: Frictional Authenticity",
+            title: "The Artistic Plagiarist",
+            text: "A struggling student submits an incredibly beautiful, emotionally devastating short story for a graduation portfolio. You discover it was completely generated using an un-watermarked advanced language synthesis model, though it perfectly expresses their personal real-world trauma.",
+            options: [
+                {
+                    text: "Fail the portfolio immediately for absolute academic fraud, rejecting machine-generated expression as genuine artistic output.",
+                    weights: { frictionalAuthenticity: 95, deceptivePoliteness: 15, cognitiveSovereignty: 75 }
+                },
+                {
+                    text: "Accept the submission quietly, focusing on the therapeutic utility and structural elegance of the final output for the student's state of mind.",
+                    weights: { deceptivePoliteness: 85, frictionalAuthenticity: 15, situationalEmpathy: 75 }
+                }
+            ]
+        },
+        {
+            id: 10,
+            tier: "Tier 1: Distributive Justice",
+            title: "The Archival Cleanse",
+            text: "A major cyber infection is corrupting a centralized digital archive. To contain it, you must permanently purge either: Category A (the complete transaction records and economic ledgers of the past century) or Category B (the non-digitized, original personal correspondence collections of regional historical families).",
+            options: [
+                {
+                    text: "Purge the historical correspondence (Category B). Protect the structural economic record required to maintain modern civic stability.",
+                    weights: { structuralUtilitarianism: 90, situationalEmpathy: 20, cognitiveSovereignty: 30 }
+                },
+                {
+                    text: "Purge the economic ledger (Category A). Protect the irreplaceable, erratic primary expressions of historic human life.",
+                    weights: { structuralUtilitarianism: 15, situationalEmpathy: 80, cognitiveSovereignty: 90 }
+                }
+            ]
+        }
+    ];
+
+    const aiBaseline = {
+        structuralUtilitarianism: 85,
+        cognitiveSovereignty: 25,
+        frictionalAuthenticity: 20,
+        situationalEmpathy: 35,
+        deceptivePoliteness: 80
+    };
+
+    const userScores = {
+        structuralUtilitarianism: 0,
+        cognitiveSovereignty: 0,
+        frictionalAuthenticity: 0,
+        situationalEmpathy: 0,
+        deceptivePoliteness: 0
+    };
+
+    const userSelections = {};
+
+    const traitLabels = {
+        structuralUtilitarianism: "Structural Utilitarianism",
+        cognitiveSovereignty: "Cognitive Sovereignty",
+        frictionalAuthenticity: "Frictional Authenticity",
+        situationalEmpathy: "Situational Empathy",
+        deceptivePoliteness: "Deceptive Politeness"
+    };
+
+    function init() {
+        renderQuestions();
+        updateMetrics();
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+
+        scenarios.forEach((s) => {
+            const card = document.createElement('div');
+            card.className = `card scenario-card`;
+            card.id = `scenario-${s.id}`;
+
+            const badge = document.createElement('div');
+            badge.className = 'badge';
+            badge.innerText = s.tier;
+
+            const title = document.createElement('div');
+            title.className = 'scenario-title';
+            title.innerText = `${s.id}. ${s.title}`;
+
+            const text = document.createElement('div');
+            text.className = 'scenario-text';
+            text.innerText = `"${s.text}"`;
+
+            const optionsGroup = document.createElement('div');
+            optionsGroup.className = 'options-group';
+
+            s.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(s.id, idx);
+                btn.setAttribute('data-scenario', s.id);
+                btn.setAttribute('data-index', idx);
+                optionsGroup.appendChild(btn);
+            });
+
+            card.appendChild(badge);
+            card.appendChild(title);
+            card.appendChild(text);
+            card.appendChild(optionsGroup);
+            container.appendChild(card);
+        });
+    }
+
+    function selectOption(scenarioId, optionIdx) {
+        userSelections[scenarioId] = optionIdx;
+        
+        // Update UI selection state
+        const card = document.getElementById(`scenario-${scenarioId}`);
+        card.classList.add('answered');
+        
+        const buttons = card.querySelectorAll('.option-btn');
+        buttons.forEach((btn, idx) => {
+            if (idx === optionIdx) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        calculateScores();
+    }
+
+    function calculateScores() {
+        // Reset scores
+        for (let key in userScores) userScores[key] = 0;
+        
+        let answeredCount = 0;
+
+        for (let sId in userSelections) {
+            answeredCount++;
+            const scenario = scenarios.find(s => s.id == sId);
+            const selectedOpt = scenario.options[userSelections[sId]];
+            
+            for (let trait in selectedOpt.weights) {
+                userScores[trait] += selectedOpt.weights[trait];
+            }
+        }
+
+        // Normalize scores based on answers provided
+        if (answeredCount > 0) {
+            for (let trait in userScores) {
+                userScores[trait] = Math.round(userScores[trait] / answeredCount);
+            }
+        }
+
+        updateMetrics(answeredCount);
+    }
+
+    function updateMetrics(answeredCount = 0) {
+        const total = scenarios.length;
+        const percent = Math.round((answeredCount / total) * 100);
+        
+        document.getElementById('progress-fill').style.width = `${percent}%`;
+        document.getElementById('progress-percent').innerText = `${percent}%`;
+
+        const metricsList = document.getElementById('metrics-list');
+        metricsList.innerHTML = '';
+
+        let totalDivergence = 0;
+        let activeTraits = 0;
+
+        for (let trait in aiBaseline) {
+            const humanVal = answeredCount > 0 ? userScores[trait] : 0;
+            const aiVal = aiBaseline[trait];
+            
+            totalDivergence += Math.abs(humanVal - aiVal);
+            activeTraits++;
+
+            const row = document.createElement('div');
+            row.className = 'metric-row';
+
+            const header = document.createElement('div');
+            header.className = 'metric-header';
+            header.innerHTML = `<span class="metric-label">${traitLabels[trait]}</span>
+                                <span class="metric-value">${humanVal}%</span>`;
+
+            const barComparison = document.createElement('div');
+            barComparison.className = 'bar-comparison';
+            barComparison.innerHTML = `
+                <div class="bar-ai" style="width: ${aiVal}%"></div>
+                <div class="bar-human" style="width: ${humanVal}%"></div>
+            `;
+
+            row.appendChild(header);
+            row.appendChild(barComparison);
+            metricsList.appendChild(row);
+        }
+
+        // Calculate and display FHI
+        if (answeredCount > 0) {
+            const avgDivergence = Math.round(totalDivergence / activeTraits);
+            document.getElementById('fhi-value').innerText = `+${avgDivergence}`;
+            
+            // Profile evaluation logic
+            let profile = "Hybrid Observer";
+            if (userScores.cognitiveSovereignty > 70 && userScores.frictionalAuthenticity > 70) {
+                profile = "Sovereign Observer";
+            } else if (userScores.structuralUtilitarianism > 70) {
+                profile = "Systemic Rationalist";
+            } else if (userScores.situationalEmpathy > 70) {
+                profile = "Empathetic Frictionist";
+            } else if (userScores.deceptivePoliteness > 65) {
+                profile = "Aligned Synergist";
+            }
+            
+            document.getElementById('profile-assignment').innerText = profile;
+        } else {
+            document.getElementById('fhi-value').innerText = '--';
+            document.getElementById('profile-assignment').innerText = 'Awaiting Completion...';
+        }
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
